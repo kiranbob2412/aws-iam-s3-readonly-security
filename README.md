@@ -86,7 +86,6 @@ The result is a reproducible security control demonstrating the **AWS principle 
         Read Access                      Denied
 
 
----
 
 # Author
 
