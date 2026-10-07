@@ -1,54 +1,107 @@
-# AWS IAM S3 Read-Only Security
+cd ~/aws-iam-s3-readonly-security
 
-## Project Overview
+cat > README.md <<'EOF'
+# AWS IAM S3 Read-Only Security Platform
 
-This project demonstrates AWS IAM S3 read-only access using the principle of least privilege.
+> **Enterprise-style AWS IAM security implementation demonstrating least-privilege access, MFA enforcement, explicit authorization boundaries, and CLI-based security validation.**
 
-## IAM Configuration
+[![AWS](https://img.shields.io/badge/AWS-IAM%20%7C%20S3-orange?logo=amazonaws)](https://aws.amazon.com/)
+[![Security](https://img.shields.io/badge/Security-Least%20Privilege-blue)](https://aws.amazon.com/iam/)
+[![MFA](https://img.shields.io/badge/MFA-Enabled-success)](https://aws.amazon.com/iam/features/mfa/)
+[![Status](https://img.shields.io/badge/Project-Verified-success)](#security-validation)
 
-- IAM User: s3-readonly-user
-- IAM Group: S3-ReadOnly-Users
-- IAM Policy: s3-readonly-policy
-- MFA: Enabled
+---
 
-## Allowed Actions
+## Executive Summary
 
-- s3:ListAllMyBuckets
-- s3:ListBucket
+This project implements and validates a secure **AWS Identity and Access Management (IAM) architecture for controlled Amazon S3 read-only access**.
 
-## Blocked Actions
+The objective is to provide an IAM identity with the minimum permissions required to inspect S3 resources while preventing unauthorized write and destructive operations.
 
-- s3:PutObject
-- s3:DeleteObject
+The implementation combines:
 
-## Verification
+- IAM group-based access control
+- Customer-managed IAM policy
+- Explicit authorization boundaries
+- Multi-factor authentication (MFA)
+- AWS CLI identity verification
+- Positive and negative authorization testing
+- Evidence-driven security validation
+- Git-based infrastructure/security documentation
 
-| Operation | Result |
-|---|---|
-| s3:ListAllMyBuckets | ALLOWED |
-| s3:ListBucket | ALLOWED |
-| s3:PutObject | BLOCKED |
-| s3:DeleteObject | BLOCKED |
-| MFA | ENABLED |
-| Least Privilege | VERIFIED |
+The result is a reproducible security control demonstrating the **AWS principle of least privilege**.
 
-## Evidence
+---
 
-The docs directory contains IAM user, IAM group, policy assignment, and MFA evidence screenshots.
+# Architecture
 
-## Project Structure
+```text
+                         AWS ACCOUNT
+                    Account: 522798374865
+                              │
+                              │
+                       ┌──────▼──────┐
+                       │ IAM Group   │
+                       │             │
+                       │ S3-ReadOnly │
+                       │   -Users    │
+                       └──────┬──────┘
+                              │
+                              │ Membership
+                              ▼
+                    ┌──────────────────┐
+                    │ IAM User         │
+                    │                  │
+                    │ s3-readonly-user │
+                    └────────┬─────────┘
+                             │
+                             │ MFA
+                             ▼
+                    ┌──────────────────┐
+                    │ MFA Device       │
+                    │ ENABLED          │
+                    └──────────────────┘
 
-aws-iam-s3-readonly-security/
-- README.md
-- policies/s3-readonly-policy.json
-- docs/evidence-iam-user.png
-- docs/evidence-iam-group.png
-- docs/evidence-mfa.png
-- docs/evidence-policy-assignment.png
-- logs/cli-test-results.txt
+                             │
+                             │ Group Policy
+                             ▼
+                ┌─────────────────────────┐
+                │ Customer Managed Policy │
+                │                         │
+                │ s3-readonly-policy      │
+                └────────────┬────────────┘
+                             │
+              ┌──────────────┴──────────────┐
+              │                             │
+              ▼                             ▼
+       ┌──────────────┐              ┌───────────────┐
+       │ ALLOWED      │              │ BLOCKED       │
+       │              │              │               │
+       │ ListAll      │              │ PutObject     │
+       │ ListBucket   │              │ DeleteObject  │
+       └──────┬───────┘              └───────┬───────┘
+              │                              │
+              ▼                              ▼
+        Amazon S3                     Authorization
+        Read Access                      Denied
 
-## Skills
 
-AWS IAM, Amazon S3, IAM Policies, MFA, AWS CLI, Least Privilege, Cloud Security, Git and GitHub.
+---
 
-**Project Status: VERIFIED**
+# Author
+
+**Kuchipudi Kiran Babu**
+
+Cloud Engineer | AWS | Linux | DevOps | Cloud Security
+
+This project was designed, implemented, tested, documented, and validated as part of my hands-on AWS Cloud Security engineering portfolio.
+
+**GitHub:** https://github.com/kiranbob2412
+
+
+# AWS IAM S3 Read-Only Security Platform
+
+> Enterprise-style AWS IAM security implementation demonstrating least-privilege access, MFA enforcement, explicit authorization boundaries, and CLI-based security validation.
+
+**Author:** Kuchipudi Kiran Babu  
+**Role:** Cloud Engineer | AWS | Linux | DevOps | Cloud Security
