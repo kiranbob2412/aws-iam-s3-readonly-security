@@ -1,0 +1,127 @@
+========================================
+AWS IAM S3 READ-ONLY VERIFICATION
+========================================
+
+AWS Account:
+522798374865
+
+IAM User:
+s3-readonly-user
+
+IAM Group:
+S3-ReadOnly-Users
+
+IAM Policy:
+s3-readonly-policy
+
+========================================
+TEST 1: AWS IDENTITY
+========================================
+
+Command:
+aws sts get-caller-identity --profile s3-readonly
+
+Result:
+PASS
+
+Verified ARN:
+arn:aws:iam::522798374865:user/s3-readonly-user
+
+
+========================================
+TEST 2: LIST ALL S3 BUCKETS
+========================================
+
+Command:
+aws s3 ls --profile s3-readonly
+
+Result:
+PASS
+
+Permission:
+s3:ListAllMyBuckets
+
+Authorization:
+ALLOWED
+
+
+========================================
+TEST 3: LIST BUCKET CONTENT
+========================================
+
+Command:
+aws s3 ls s3://iam-s3-readonly-522798374865-1791356211 --profile s3-readonly
+
+Result:
+PASS
+
+Permission:
+s3:ListBucket
+
+Authorization:
+ALLOWED
+
+
+========================================
+TEST 4: PUT OBJECT
+========================================
+
+Command:
+aws s3 cp /tmp/iam-readonly-test.txt s3://iam-s3-readonly-522798374865-1791356211/iam-readonly-test.txt --profile s3-readonly
+
+Result:
+PASS - ACCESS DENIED AS EXPECTED
+
+Permission:
+s3:PutObject
+
+Authorization:
+BLOCKED
+
+Reason:
+Explicit deny in identity-based policy:
+s3-readonly-policy
+
+
+========================================
+TEST 5: DELETE OBJECT
+========================================
+
+Command:
+aws s3 rm s3://iam-s3-readonly-522798374865-1791356211/iam-readonly-test.txt --profile s3-readonly
+
+Result:
+PASS - ACCESS DENIED AS EXPECTED
+
+Permission:
+s3:DeleteObject
+
+Authorization:
+BLOCKED
+
+Reason:
+Explicit deny in identity-based policy:
+s3-readonly-policy
+
+
+========================================
+FINAL SECURITY VERIFICATION
+========================================
+
+s3:ListAllMyBuckets  -> ALLOWED
+s3:ListBucket        -> ALLOWED
+s3:PutObject         -> BLOCKED
+s3:DeleteObject      -> BLOCKED
+
+MFA:
+ENABLED
+
+IAM Least-Privilege Verification:
+PASS
+
+========================================
+PROJECT STATUS
+========================================
+
+AWS IAM S3 Read-Only Security Project:
+VERIFIED
